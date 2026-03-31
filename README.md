@@ -30,6 +30,7 @@ Sur Ubuntu VM, vous n'avez pas besoin de Docker Desktop. Suivez ces étapes :
 4. Installer Docker Engine et Docker Compose plugin :
    ```bash
    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+   sudo systemctl enable --now docker
    ```
 5. Autoriser votre utilisateur à exécuter Docker sans `sudo` (optionnel) :
    ```bash
@@ -40,9 +41,13 @@ Sur Ubuntu VM, vous n'avez pas besoin de Docker Desktop. Suivez ces étapes :
 ## Exécuter le projet localement
 
 1. Ouvrir un terminal dans le dossier du projet.
-2. Lancer :
+2. Construire et lancer les services :
    ```bash
-   docker compose up -d
+   docker compose up --build -d
+   ```
+   Si vous n'avez pas ajouté votre utilisateur au groupe `docker`, utilisez :
+   ```bash
+   sudo docker compose up --build -d
    ```
 3. Vérifier que les services sont démarrés :
    - API : http://localhost
@@ -51,6 +56,18 @@ Sur Ubuntu VM, vous n'avez pas besoin de Docker Desktop. Suivez ces étapes :
    - Grafana : http://localhost:3000
 
 > Si vous utilisez une VM distante, remplacez `localhost` par l'adresse IP de la VM dans votre navigateur ou utilisez un tunnel SSH/port forwarding.
+
+## Dépannage Ubuntu
+
+Si `docker compose up --build -d` échoue, exécutez :
+
+```bash
+docker pull python:3.11-slim
+sudo docker compose build --no-cache --progress=plain app
+sudo docker compose up --build -d
+```
+
+Si le build du service app échoue encore, copiez les messages d'erreur complets concernant `pip` ou `python`.
 
 ## API TODO
 
